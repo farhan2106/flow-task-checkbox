@@ -13,7 +13,7 @@ export interface Task {
 }
 
 export enum TaskStatus {
-  NotUrgent,
-  DueSoon,
-  Overdue
+  NotUrgent = 'NotUrgent',
+  DueSoon = 'DueSoon',
+  Overdue = 'Overdue'
 }

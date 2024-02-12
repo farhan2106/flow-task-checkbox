@@ -161,7 +161,7 @@ describe('TaskRepository', () => {
       });
 
       (mockDb.query as jest.Mock).mockResolvedValueOnce({
-        rows: [{ total_count: expectedTotalCount }],
+        rows: [{ totalCount: expectedTotalCount }],
       });
 
       const result = await taskRepository.list(pageSize, pageNumber, sortBy, searchParams);

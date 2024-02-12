@@ -11,11 +11,11 @@ export default class TaskRepository {
   async create(taskData: TaskDTO) {
     const { name, description, dueDate } = taskData;
     const query = `
-      INSERT INTO tasks (name, description, due_date, create_date, status)
+      INSERT INTO tasks (name, description, due_date, create_date)
       VALUES ($1, $2, $3, NOW(), $4)
-      RETURNING name, description, due_date as "dueDate", create_date as "createDate", status;
+      RETURNING name, description, due_date as "dueDate", create_date as "createDate";
     `;
-    const values = [name, description, dueDate, TaskStatus.NotUrgent];
+    const values = [name, description, dueDate];
 
     const result = await this.db.query(query, values);
     return result.rows[0] as Task;
@@ -23,7 +23,16 @@ export default class TaskRepository {
 
   async read(taskId: number) {
     const query = `
-      SELECT name, description, due_date as "dueDate", create_date as "createDate", status
+      SELECT 
+        name, 
+        description, 
+        due_date AS "dueDate", 
+        create_date AS "createDate",
+        CASE 
+            WHEN due_date > NOW() + INTERVAL '7 days' THEN '${TaskStatus.NotUrgent}'
+            WHEN due_date <= NOW() + INTERVAL '7 days' AND due_date >= NOW() THEN '${TaskStatus.DueSoon}'
+            ELSE '${TaskStatus.Overdue}'
+        END AS status
       FROM tasks
       WHERE id = $1;
     `;
@@ -38,11 +47,21 @@ export default class TaskRepository {
     const { name, description, dueDate } = updatedTaskData;
     const query = `
       UPDATE tasks
-      SET name = COALESCE($1, name), 
+      SET 
+          name = COALESCE($1, name), 
           description = COALESCE($2, description),
           due_date = COALESCE($3, due_date)
       WHERE id = $4
-      RETURNING name, description, due_date as "dueDate", create_date as "createDate", status;
+      RETURNING 
+          name, 
+          description, 
+          due_date AS "dueDate", 
+          create_date AS "createDate",
+          CASE 
+            WHEN due_date > NOW() + INTERVAL '7 days' THEN '${TaskStatus.NotUrgent}'
+            WHEN due_date <= NOW() + INTERVAL '7 days' AND due_date >= NOW() THEN '${TaskStatus.DueSoon}'
+            ELSE '${TaskStatus.Overdue}'
+          END AS status;
     `;
     const values = [name, description, dueDate, taskId];
 
@@ -58,7 +77,16 @@ export default class TaskRepository {
   ): Promise<{ tasks: Task[], totalCount: number }> {
     const offset = (pageNumber - 1) * pageSize;
     let query = `
-      SELECT name, description, due_date as "dueDate", create_date as "createDate", status
+      SELECT 
+        name,
+        description,
+        due_date as "dueDate",
+        create_date as "createDate",
+        CASE 
+            WHEN due_date > NOW() + INTERVAL '7 days' THEN '${TaskStatus.NotUrgent}'
+            WHEN due_date <= NOW() + INTERVAL '7 days' AND due_date >= NOW() THEN '${TaskStatus.DueSoon}'
+            ELSE '${TaskStatus.Overdue}'
+        END AS status
       FROM tasks
     `;
   
@@ -92,7 +120,7 @@ export default class TaskRepository {
     const result = await this.db.query(query, values);
   
     let totalCountQuery = `
-      SELECT COUNT(*) as total_count FROM tasks
+      SELECT COUNT(*) as totalCount FROM tasks
     `;
   
     if (whereClauses.length > 0) {
@@ -100,7 +128,7 @@ export default class TaskRepository {
     }
   
     const totalCountResult = await this.db.query(totalCountQuery, values.slice(0, -2));
-    const totalCount = parseInt(totalCountResult.rows[0].total_count);
+    const totalCount = parseInt(totalCountResult.rows[0].totalCount);
   
     return { tasks: result.rows as Task[], totalCount };
   }
