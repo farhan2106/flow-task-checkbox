@@ -130,7 +130,11 @@ describe('TaskRepository', () => {
   });
 
   describe('list', () => {
-    it('should return a list of tasks', async () => {
+    it('should return a list of tasks and total count', async () => {
+      const pageSize = 10;
+      const pageNumber = 1;
+      const offset = (pageNumber - 1) * pageSize;
+
       const expectedTasks: Task[] = [
         {
           name: 'Task 1',
@@ -148,14 +152,29 @@ describe('TaskRepository', () => {
         },
       ];
 
+      const expectedTotalCount = 100;
+
       (mockDb.query as jest.Mock).mockResolvedValueOnce({
         rows: expectedTasks,
       });
 
-      const result = await taskRepository.list();
-      expect(result).toEqual(expectedTasks);
-      expect(mockDb.query).toHaveBeenCalledWith(
+      (mockDb.query as jest.Mock).mockResolvedValueOnce({
+        rows: [{ total_count: expectedTotalCount }],
+      });
+
+      const result = await taskRepository.list(pageSize, pageNumber);
+
+      expect(result.tasks).toEqual(expectedTasks);
+      expect(result.totalCount).toEqual(expectedTotalCount);
+      expect(mockDb.query).toHaveBeenNthCalledWith(
+        1,
         expect.stringContaining('SELECT'),
+        [pageSize, offset]
+      );
+
+      expect(mockDb.query).toHaveBeenNthCalledWith(
+        2,
+        expect.stringContaining('SELECT COUNT(*)'),
       );
     });
   });

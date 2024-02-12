@@ -50,12 +50,24 @@ export default class TaskRepository {
     return result.rows[0] as Task;
   }
 
-  async list() {
+  async list(pageSize: number, pageNumber: number): Promise<{ tasks: Task[], totalCount: number }> {
+    const offset = (pageNumber - 1) * pageSize;
     const query = `
-      SELECT name, description, due_date as "dueDate", create_date as "createDate", status
-      FROM tasks;
+        SELECT name, description, due_date as "dueDate", create_date as "createDate", status
+        FROM tasks
+        ORDER BY create_date
+        LIMIT $1
+        OFFSET $2;
     `;
-    const result = await this._db.query(query);
-    return result.rows as Task[];
+    const values = [pageSize, offset];
+
+    const result = await this._db.query(query, values);
+    const totalCountQuery = `
+        SELECT COUNT(*) as total_count FROM tasks;
+    `;
+    const totalCountResult = await this._db.query(totalCountQuery);
+    const totalCount = parseInt(totalCountResult.rows[0].total_count);
+
+    return { tasks: result.rows as Task[], totalCount };
   }
 }
