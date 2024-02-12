@@ -20,13 +20,13 @@ export default class TaskRepository {
   async list(
     pageNumber: number = 1,
     pageSize: number = 10,
-    nameQuery: string = '',
+    name: string = '',
     sortBy: string = 'createDate' // Default sorting by createDate
   ) {
     const params = {
       pageNumber,
       pageSize,
-      name: nameQuery,
+      name,
       sortBy
     };
 
