@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
+import useSWR from 'swr'
 import { TaskForm, TaskList } from "./interfaces";
+import TaskRepository from './domain/repositories/TaskRepo';
+
+const taskRepo = new TaskRepository(`//${process.env.API_SERVER}/api/v1`)
 
 export function App() {
-  const [isSearching, setIsSearching] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [searchString, setSearchString] = useState('');
+  const [sortBy, setSortBy] = useState('');
+
+  const { data: tasks, error, isLoading: isSearching } = useSWR([pageNumber, searchString, sortBy], ([pageNumber, searchString, sortBy]) => taskRepo.list(pageNumber, 10, searchString, sortBy))
 
   // === Side Effects
 
@@ -13,15 +21,10 @@ export function App() {
   };
 
   const onSearch = (searchText) => {
-    console.log('Search text:', searchText);
+    !isSearching && setSearchString(searchText);
   }
 
   // === Static Vars
-  const tasks = [
-    { id: 1, name: 'Task 1', description: 'Description 1', dueDate: '2024-02-15', createDate: '2024-02-10', status: 'Not urgent' },
-    { id: 2, name: 'Task 2', description: 'Description 2', dueDate: '2024-02-20', createDate: '2024-02-11', status: 'Due soon' },
-    // Add more tasks as needed
-  ];  
 
   return (
     <>

@@ -22,12 +22,10 @@ export const TaskList = ({ isSearching, tasks, onSearch }) => {
     {
       name: 'Name',
       selector: row => row.name,
-      sortable: true,
     },
     {
       name: 'Description',
       selector: row => row.description,
-      sortable: true,
     },
     {
       name: 'Due Date',
@@ -42,7 +40,6 @@ export const TaskList = ({ isSearching, tasks, onSearch }) => {
     {
       name: 'Status',
       selector: row => row.status,
-      sortable: true,
     },
   ];
 
