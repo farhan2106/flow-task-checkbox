@@ -22,18 +22,6 @@ describe('TaskService', () => {
     });
   });
 
-  describe('getAllTasks', () => {
-    it('should get all tasks with pagination', async () => {
-      const pageNumber = 1;
-      const pageSize = 10;
-      const tasks = [{ name: 'Task 1', description: 'Description 1', dueDate: new Date() }] as any;
-      const totalCount = 1;
-      taskRepoMock.list.mockResolvedValueOnce({ tasks, totalCount });
-      const result = await taskService.getAllTasks(pageNumber, pageSize);
-      expect(result).toEqual({ tasks, totalCount });
-    });
-  });
-
   describe('editTask', () => {
     it('should edit a task', async () => {
       const taskId = 1;
@@ -44,50 +32,36 @@ describe('TaskService', () => {
     });
   });
 
-  describe('searchTasksByName', () => {
-    it('should search tasks by name', async () => {
-      const taskName = 'Task 1';
+  describe('getTasks', () => {
+    it('should get tasks with pagination, sorting, and searching', async () => {
+      const pageNumber = 1;
+      const pageSize = 10;
+      const sortBy = 'due_date ASC';
+      const searchParams = { name: 'Task' };
       const tasks = [{ name: 'Task 1', description: 'Description 1', dueDate: new Date() }] as any;
       const totalCount = 1;
-      taskRepoMock.list.mockResolvedValueOnce({ tasks, totalCount });
-      const result = await taskService.searchTasksByName(taskName);
-      expect(result).toEqual({ tasks, totalCount });
-    });
-  });
 
-  describe('getTasksSortedByDueDate', () => {
-    it('should get tasks sorted by due date', async () => {
-      const tasks = [{ name: 'Task 1', description: 'Description 1', dueDate: new Date() }] as any;
-      const totalCount = 1;
       taskRepoMock.list.mockResolvedValueOnce({ tasks, totalCount });
-      const result = await taskService.getTasksSortedByDueDate();
+
+      const result = await taskService.getTasks(pageNumber, pageSize, sortBy, searchParams);
+
       expect(result).toEqual({ tasks, totalCount });
+      expect(taskRepoMock.list).toHaveBeenCalledWith(pageSize, pageNumber, sortBy, searchParams);
     });
 
-    it('should get tasks sorted by due date in descending order', async () => {
-      const tasks = [{ name: 'Task 1', description: 'Description 1', dueDate: new Date() }] as any;
-      const totalCount = 1;
-      taskRepoMock.list.mockResolvedValueOnce({ tasks, totalCount });
-      const result = await taskService.getTasksSortedByDueDate(false);
-      expect(result).toEqual({ tasks, totalCount });
-    });
-  });
+    it('should get tasks with default parameters', async () => {
+      const pageNumber = 1;
+      const pageSize = 10;
 
-  describe('getTasksSortedByCreateDate', () => {
-    it('should get tasks sorted by create date', async () => {
       const tasks = [{ name: 'Task 1', description: 'Description 1', dueDate: new Date() }] as any;
       const totalCount = 1;
-      taskRepoMock.list.mockResolvedValueOnce({ tasks, totalCount });
-      const result = await taskService.getTasksSortedByCreateDate();
-      expect(result).toEqual({ tasks, totalCount });
-    });
 
-    it('should get tasks sorted by create date in descending order', async () => {
-      const tasks = [{ name: 'Task 1', description: 'Description 1', dueDate: new Date() }] as any;
-      const totalCount = 1;
       taskRepoMock.list.mockResolvedValueOnce({ tasks, totalCount });
-      const result = await taskService.getTasksSortedByCreateDate(false);
+
+      const result = await taskService.getTasks(pageNumber, pageSize);
+
       expect(result).toEqual({ tasks, totalCount });
+      expect(taskRepoMock.list).toHaveBeenCalledWith(pageSize, pageNumber, null, {});
     });
   });
 });
