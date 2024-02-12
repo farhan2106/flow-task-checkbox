@@ -50,24 +50,58 @@ export default class TaskRepository {
     return result.rows[0] as Task;
   }
 
-  async list(pageSize: number, pageNumber: number): Promise<{ tasks: Task[], totalCount: number }> {
+  async list(
+    pageSize: number,
+    pageNumber: number,
+    sortBy: string | null = null,
+    searchParams: Partial<TaskDTO> = {}
+  ): Promise<{ tasks: Task[], totalCount: number }> {
     const offset = (pageNumber - 1) * pageSize;
-    const query = `
-        SELECT name, description, due_date as "dueDate", create_date as "createDate", status
-        FROM tasks
-        ORDER BY create_date
-        LIMIT $1
-        OFFSET $2;
+    let query = `
+      SELECT name, description, due_date as "dueDate", create_date as "createDate", status
+      FROM tasks
     `;
-    const values = [pageSize, offset];
-
+  
+    const whereClauses: string[] = [];
+    const values: any[] = [];
+  
+    if (Object.keys(searchParams).length > 0) {
+      for (const key in searchParams) {
+        if (searchParams.hasOwnProperty(key) && (searchParams as any)[key]) {
+          whereClauses.push(`${key} ILIKE $${values.length + 1}`);
+          values.push(`%${(searchParams as any)[key]}%`);
+        }
+      }
+    }
+  
+    if (whereClauses.length > 0) {
+      query += ` WHERE ${whereClauses.join(' AND ')}`;
+    }
+  
+    if (sortBy) {
+      query += ` ORDER BY ${sortBy}`;
+    }
+  
+    query += `
+      LIMIT $${values.length + 1}
+      OFFSET $${values.length + 2};
+    `;
+  
+    values.push(pageSize, offset);
+  
     const result = await this._db.query(query, values);
-    const totalCountQuery = `
-        SELECT COUNT(*) as total_count FROM tasks;
+  
+    let totalCountQuery = `
+      SELECT COUNT(*) as total_count FROM tasks
     `;
-    const totalCountResult = await this._db.query(totalCountQuery);
+  
+    if (whereClauses.length > 0) {
+      totalCountQuery += ` WHERE ${whereClauses.join(' AND ')}`;
+    }
+  
+    const totalCountResult = await this._db.query(totalCountQuery, values.slice(0, -2));
     const totalCount = parseInt(totalCountResult.rows[0].total_count);
-
+  
     return { tasks: result.rows as Task[], totalCount };
   }
 }

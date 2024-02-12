@@ -130,9 +130,11 @@ describe('TaskRepository', () => {
   });
 
   describe('list', () => {
-    it('should return a list of tasks and total count', async () => {
+    it('should return a list of tasks and total count with pagination, sorting, and searching', async () => {
       const pageSize = 10;
       const pageNumber = 1;
+      const sortBy = 'due_date ASC';
+      const searchParams: Partial<TaskDTO> = { name: 'Task' };
       const offset = (pageNumber - 1) * pageSize;
 
       const expectedTasks: Task[] = [
@@ -162,19 +164,20 @@ describe('TaskRepository', () => {
         rows: [{ total_count: expectedTotalCount }],
       });
 
-      const result = await taskRepository.list(pageSize, pageNumber);
+      const result = await taskRepository.list(pageSize, pageNumber, sortBy, searchParams);
 
       expect(result.tasks).toEqual(expectedTasks);
       expect(result.totalCount).toEqual(expectedTotalCount);
       expect(mockDb.query).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('SELECT'),
-        [pageSize, offset]
+        ['%Task%', pageSize, offset]
       );
 
       expect(mockDb.query).toHaveBeenNthCalledWith(
         2,
         expect.stringContaining('SELECT COUNT(*)'),
+        ['%Task%']
       );
     });
   });
