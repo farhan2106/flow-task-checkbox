@@ -4,6 +4,7 @@
   "description": "",
   "source": "src/index.html",
   "scripts": {
+    "test": "jest",
     "start": "parcel",
     "build": "parcel build"
   },
@@ -19,8 +20,10 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "@types/jest": "^28.1.0",
     "parcel": "^2.11.0",
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "ts-jest": "^28.0.3"
   },
   "engines": {
     "node": ">=20.x.x",
