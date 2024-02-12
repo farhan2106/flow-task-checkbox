@@ -1,6 +1,6 @@
-import SomeEntityRepository from "../repositories/some_entity_repo";
+import SomeEntityRepository from "../repositories/TaskRepo";
 
-interface ISomeService{
+interface ISomeService {
   someEntityRepository: SomeEntityRepository;
 }
 

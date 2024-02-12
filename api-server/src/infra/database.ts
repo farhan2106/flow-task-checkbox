@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool } from 'pg';
 
 class DbPool {
   private static instance: DbPool;
@@ -33,7 +33,7 @@ class DbPool {
     return DbPool.instance;
   }
 
-  async getClient(): Promise<PoolClient> {
+  async getClient() {
     const client = await this.pool.connect();
     return client;
   }
