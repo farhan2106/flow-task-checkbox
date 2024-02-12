@@ -2,10 +2,10 @@ import { PoolClient } from 'pg';
 import { Task, TaskDTO, TaskStatus } from '../models';
 
 export default class TaskRepository {
-  private _db: PoolClient;
+  private db: PoolClient;
   
   constructor(db: PoolClient) {
-    this._db = db;
+    this.db = db;
   }
   
   async create(taskData: TaskDTO) {
@@ -17,7 +17,7 @@ export default class TaskRepository {
     `;
     const values = [name, description, dueDate, TaskStatus.NotUrgent];
 
-    const result = await this._db.query(query, values);
+    const result = await this.db.query(query, values);
     return result.rows[0] as Task;
   }
 
@@ -27,7 +27,7 @@ export default class TaskRepository {
       FROM tasks
       WHERE id = $1;
     `;
-    const result = await this._db.query(query, [taskId]);
+    const result = await this.db.query(query, [taskId]);
     return result.rows.length ? result.rows[0] as Task : null;
   }
 
@@ -46,7 +46,7 @@ export default class TaskRepository {
     `;
     const values = [name, description, dueDate, taskId];
 
-    const result = await this._db.query(query, values);
+    const result = await this.db.query(query, values);
     return result.rows[0] as Task;
   }
 
@@ -89,7 +89,7 @@ export default class TaskRepository {
   
     values.push(pageSize, offset);
   
-    const result = await this._db.query(query, values);
+    const result = await this.db.query(query, values);
   
     let totalCountQuery = `
       SELECT COUNT(*) as total_count FROM tasks
@@ -99,7 +99,7 @@ export default class TaskRepository {
       totalCountQuery += ` WHERE ${whereClauses.join(' AND ')}`;
     }
   
-    const totalCountResult = await this._db.query(totalCountQuery, values.slice(0, -2));
+    const totalCountResult = await this.db.query(totalCountQuery, values.slice(0, -2));
     const totalCount = parseInt(totalCountResult.rows[0].total_count);
   
     return { tasks: result.rows as Task[], totalCount };

@@ -9,7 +9,7 @@ describe('TaskService', () => {
 
   beforeEach(() => {
     const taskRepo = new TaskRepository({} as any);
-    taskService = new TaskService({ taskRepo });
+    taskService = new TaskService(jest.fn() as any, { taskRepo });
     taskRepoMock = taskRepo as jest.Mocked<TaskRepository>;
   });
 

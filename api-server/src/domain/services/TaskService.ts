@@ -1,5 +1,6 @@
 import TaskRepository from "../repositories/TaskRepo";
 import { Task, TaskDTO } from "../models";
+import { PoolClient } from "pg";
 
 interface ITaskService {
   taskRepo: TaskRepository;
@@ -8,7 +9,7 @@ interface ITaskService {
 export default class TaskService {
   private taskRepo: TaskRepository;
 
-  constructor(deps: ITaskService) {
+  constructor(db: PoolClient, deps: ITaskService = { taskRepo: new TaskRepository(db) }) {
     this.taskRepo = deps.taskRepo;
   }
 
