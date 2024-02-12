@@ -6,17 +6,25 @@ export default class TaskController {
   async getTasks(req: Request, res: Response) {
     let dbConn;
     try {
-      let { pageNumber, pageSize, sortBy, search } = req.query;
-      
+      const { pageNumber, pageSize, sortBy, search } = req.query;
+
+      // Validate pageNumber and pageSize
+      const pageNumberInt = parseInt(pageNumber as string);
+      const pageSizeInt = parseInt(pageSize as string);
+      if (isNaN(pageNumberInt) || isNaN(pageSizeInt) || pageNumberInt < 1 || pageSizeInt < 1) {
+        return res.status(400).json({ error: "Invalid pageNumber or pageSize" });
+      }
+
       // Set default sorting by create date if sortBy is not provided or is invalid
-      sortBy = (sortBy === 'dueDate' || sortBy === 'createDate') ? sortBy : 'createDate';
+      const validSortByValues = ['dueDate', 'createDate'];
+      const sortByValue = validSortByValues.includes(sortBy as string) ? sortBy : 'createDate';
 
       // Set search value to an empty string if not provided
-      search = search || '';
+      const searchValue = search || '';
 
       dbConn = await dbPool.getClient();
       const taskService = new TaskService(dbConn);
-      const tasks = await taskService.getTasks(pageNumber, pageSize, sortBy as string, { name: search as string });
+      const tasks = await taskService.getTasks(pageNumberInt, pageSizeInt, sortByValue as string, { name: searchValue as string });
       res.status(200).json(tasks);
     } catch (error) {
       console.error(error);
@@ -29,11 +37,16 @@ export default class TaskController {
   async createTask(req: Request, res: Response) {
     let dbConn;
     try {
-      const taskData = req.body;
+      const { name, description, dueDate } = req.body;
+
+      // Validate request body
+      if (!name || !description || !dueDate) {
+        return res.status(400).json({ error: "Name, description, and dueDate are required" });
+      }
 
       dbConn = await dbPool.getClient();
       const taskService = new TaskService(dbConn);
-      const task = await taskService.createTask(taskData);
+      const task = await taskService.createTask({ name, description, dueDate });
       res.status(201).json(task);
     } catch (error) {
       console.error(error);
@@ -48,6 +61,16 @@ export default class TaskController {
     try {
       const taskId = parseInt(req.params.id);
       const updatedTaskData = req.body;
+
+      // Validate taskId
+      if (isNaN(taskId) || taskId < 1) {
+        return res.status(400).json({ error: "Invalid taskId" });
+      }
+
+      // Validate updatedTaskData
+      if (Object.keys(updatedTaskData).length === 0) {
+        return res.status(400).json({ error: "No fields to update" });
+      }
 
       dbConn = await dbPool.getClient();
       const taskService = new TaskService(dbConn);
