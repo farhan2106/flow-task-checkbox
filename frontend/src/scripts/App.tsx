@@ -10,7 +10,7 @@ export function App() {
   const [searchString, setSearchString] = useState('');
   const [sortBy, setSortBy] = useState('');
 
-  const { data: tasks, error, isLoading: isSearching } = useSWR([pageNumber, searchString, sortBy], ([pageNumber, searchString, sortBy]) => taskRepo.list(pageNumber, 10, searchString, sortBy))
+  const { data: result, error, isLoading: isSearching } = useSWR([pageNumber, searchString, sortBy], ([pageNumber, searchString, sortBy]) => taskRepo.list(pageNumber, 10, searchString, sortBy))
 
   // === Side Effects
 
@@ -42,7 +42,7 @@ export function App() {
             <div className="card">
               <div className="card-body">
                 <p className="fs-4">Task List</p>
-                <TaskList isSearching={isSearching} tasks={tasks} onSearch={onSearch} />
+                <TaskList isSearching={isSearching} tasks={result?.tasks} onSearch={onSearch} />
               </div>
             </div>
           </div>
