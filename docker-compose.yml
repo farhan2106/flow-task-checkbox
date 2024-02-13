@@ -21,7 +21,6 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_ENV: $NODE_ENV
-        PORT: $API_SERVICE_PORT
     restart: always
     ports:
       - "$API_SERVICE_PORT:$API_SERVICE_PORT"
@@ -41,16 +40,20 @@ services:
       - postgres
       - redis
 
-  nginx:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NODE_ENV: $NODE_ENV
     restart: always
     ports:
-      - "80:80"
+      - "1234:1234"  # Expose port for Parcel development server
     volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./frontend/dist:/usr/share/nginx/html
+      - ./frontend:/usr/src/app
+    environment:
+      NODE_ENV: $NODE_ENV
+      FE_API_SERVER: //localhost:$API_SERVICE_PORT
     depends_on:
       - api-server
 

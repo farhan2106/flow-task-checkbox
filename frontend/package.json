@@ -5,7 +5,9 @@
   "source": "src/index.html",
   "scripts": {
     "test": "jest",
+    "prestart": "node generate-env.js",
     "start": "parcel",
+    "watch": "parcel watch",
     "build": "parcel build"
   },
   "author": "",

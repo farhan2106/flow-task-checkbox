@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 export function verifyOrigin(req: Request): Boolean {
   const allowlist = [
-    "http://localhost:3000"
+    "http://localhost:1234"
   ];
   if (allowlist.indexOf(req.header("Origin") || "") !== -1) {
     return true;

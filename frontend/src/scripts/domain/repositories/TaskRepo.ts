@@ -23,12 +23,6 @@ export default class TaskRepository {
     searchString: string = '',
     sortBy: string = 'createDate' // Default sorting by createDate
   ) {
-    return [
-      { id: 1, name: 'Task 1', description: 'Description 1', dueDate: '2024-02-15', createDate: '2024-02-10', status: 'Not urgent' },
-      { id: 2, name: 'Task 2', description: 'Description 2', dueDate: '2024-02-20', createDate: '2024-02-11', status: 'Due soon' },
-      // Add more tasks as needed
-    ];  
-
     const params = {
       pageNumber,
       pageSize,

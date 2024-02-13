@@ -1,3 +1,9 @@
-FROM nginx:alpine
+FROM node:20 AS build
 
-COPY nginx.conf /etc/nginx/nginx.conf
+ARG NODE_ENV
+
+WORKDIR /usr/src/app
+
+EXPOSE 1234
+
+CMD [ "npm", "start" ]

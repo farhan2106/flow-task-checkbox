@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import { TaskForm, TaskList } from "./interfaces";
 import TaskRepository from './domain/repositories/TaskRepo';
 
-const taskRepo = new TaskRepository(`//${process.env.API_SERVER}/api/v1`)
+const taskRepo = new TaskRepository(`${process.env.FE_API_SERVER}/api/v1`)
 
 export function App() {
   const [pageNumber, setPageNumber] = useState(1);
