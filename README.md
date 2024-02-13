@@ -1,29 +1,25 @@
-///
-// • User should be able to create a new task, including the following fields (Required)
-// ◦ Name
-// ◦ Description
-// ◦ Due date
-// • User should be able to view all tasks created in a list view, showing all the following details (Required)
-// ◦ Name
-// ◦ Description
-// ◦ Due date
-// ◦ Create date
-// ◦ Status
-//     ▪ Not urgent
-//     ▪ Due soon (Due date is within 7 days)
-//     ▪ Overdue
-// • User should be able to edit task name, description and due date (Required)
-// • User should be able to sort by due date or create date (Should have)
-// • User should be able to search based on task name (Should have)
+# Flow Task Management by Farhan
 
-    • Create a working solution that showcases the above required user stories & addresses the risk identified
-    • Please describe how you will approach the should have user stories. 
-    • Please articulate and explain any design decisions you made in your readme.
-    • Feel free to use any libraries to help you, but please avoid using NestJS.
-    • Don’t worry too much about styling it perfectly!
-    • List any further improvements to your code that you would’ve made if you had time
+## Potential Risk To Mitigate:
 
+- Implement thorough error handling mechanisms to handle potential errors during task creation, editing, and listing.
+- Incorporate input validation to ensure data integrity and prevent unexpected behavior.
+- Use defensive programming techniques to handle edge cases and unexpected inputs gracefully.
 
-Validation Idea
+## Design Decisions:
 
+- Utilize Onion architecture to maintain separation of concerns and facilitate modularity, making the application more maintainable and scalable.
+- Implement Domain-Driven Design principles to model the core business logic and entities effectively.
+- Opt for unit testing to ensure the reliability and robustness of individual components, following test-driven development (TDD) practices where applicable.
+
+## Further Improvements, if I have more time:
+
+- Implement pagination for the task list view to improve performance and user experience when dealing with a large number of tasks.
+- Enhance the frontend interface with responsive design to ensure usability across different devices and screen sizes.
+- Implement user authentication and authorization mechanisms to secure access to task management functionalities.
+- Integrate automated end-to-end testing to validate the entire application flow and ensure seamless functionality across all layers.
+
+## How to Start
+
+`docker-compose up`
 `docker-compose down --volumes` -- when you want to start over with new database
