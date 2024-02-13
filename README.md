@@ -21,5 +21,6 @@
 
 ## How to Start
 
+- Rename `.env.sample` to `.env` and populate the env values. 
 - `docker-compose up`
 - `docker-compose down --volumes` -- when you want to start over with new database
