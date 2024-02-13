@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import TaskController from "./Task";
-// import TaskService from "@domain/services/TaskService";
+// import TaskService from "./../../../../domain/services/TaskService";
 
-jest.mock("@infra/database", () => ({
+jest.mock("../../../../infra/database", () => ({
   dbPool: {
     getClient: jest.fn(),
   },
@@ -13,7 +13,7 @@ const mockTaskService = {
   createTask: jest.fn(),
   editTask: jest.fn(),
 };
-jest.mock("@domain/services/TaskService", () => jest.fn().mockImplementation(() => mockTaskService));
+jest.mock("./../../../../domain/services/TaskService", () => jest.fn().mockImplementation(() => mockTaskService));
 
 describe("TaskController", () => {
   let taskController: TaskController;

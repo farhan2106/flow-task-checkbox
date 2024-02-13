@@ -1,4 +1,3 @@
-import 'module-alias/register';
 import initHttp from "./interfaces/http";
 import { redisClient } from "./infra/cache";
 import { dbPool } from "./infra/database";

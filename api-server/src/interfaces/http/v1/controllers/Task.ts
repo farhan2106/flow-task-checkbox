@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { dbPool } from "@infra/database";
-import TaskService from "@domain/services/TaskService";
+import { dbPool } from "../../../../infra/database";
+import TaskService from "./../../../../domain/services/TaskService";
 
 export default class TaskController {
   async getTasks(req: Request, res: Response) {

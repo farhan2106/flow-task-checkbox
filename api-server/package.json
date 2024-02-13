@@ -26,7 +26,6 @@
     "helmet": "^5.1.0",
     "jest": "^28.1.0",
     "jsonwebtoken": "^8.5.1",
-    "module-alias": "^2.2.3",
     "morgan": "^1.10.0",
     "pg": "^8.11.3",
     "redis": "^4.6.0",
@@ -55,10 +54,5 @@
   },
   "lint-staged": {
     "src/**/*.{ts,md}": "prettier --write **/*.ts"
-  },
-  "_moduleAliases": {
-    "@domain": "dist/domain",
-    "@infra": "dist/infra",
-    "@interfaces": "dist/interfaces"
   }
 }

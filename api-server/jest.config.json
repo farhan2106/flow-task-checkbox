@@ -1,10 +1,5 @@
 {
   "preset": "ts-jest",
   "testEnvironment": "node",
-  "moduleNameMapper": {
-    "^@domain/(.*)$": "<rootDir>/src/domain/$1",
-    "^@interfaces/(.*)$": "<rootDir>/src/interfaces/$1",
-    "^@infra/(.*)$": "<rootDir>/src/infra/$1"
-  },
   "testPathIgnorePatterns": ["dist"]
 }
