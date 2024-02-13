@@ -25,3 +25,5 @@
 
 
 Validation Idea
+
+`docker-compose down --volumes` -- when you want to start over with new database

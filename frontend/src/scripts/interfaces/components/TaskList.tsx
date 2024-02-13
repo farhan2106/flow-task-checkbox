@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { useDebounce } from 'use-debounce';
 
-export const TaskList = ({ isSearching, tasks, totalCount, onSearch, onPageChange, onPerPageChange, onSort }) => {
+export const TaskList = ({ isSearching, tasks, totalCount, onSelect, onSearch, onPageChange, onPerPageChange, onSort }) => {
   const [searchText, setSearchText] = useState('');
   const [debounchedSearchText] = useDebounce(searchText, 1000);
   const [pageSize, setPageSize] = useState(10);
@@ -29,6 +29,10 @@ export const TaskList = ({ isSearching, tasks, totalCount, onSearch, onPageChang
 
   const handleSort = (column, sortDirection) => {
     onSort(column.name, sortDirection)
+  };
+
+  const handleEdit = (row) => {
+    onSelect(row)
   };
 
   // === Side Effects
@@ -63,6 +67,14 @@ export const TaskList = ({ isSearching, tasks, totalCount, onSearch, onPageChang
     {
       name: 'Status',
       selector: row => row.status,
+    },
+    {
+      name: 'Actions',
+      cell: row => (
+        <div>
+          <button className="btn btn-primary btn-sm mr-2" onClick={() => handleEdit(row)}>Edit</button>
+        </div>
+      ),
     },
   ];
 

@@ -12,6 +12,7 @@ export function App() {
   const [sortBy, setSortBy] = useState('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedTask, setSelectedTask] = useState();
 
   const {
     data: taskListResult,
@@ -23,13 +24,22 @@ export function App() {
   // === Side Effects
 
   // === Event Handlers
-  const onCreateTask = (taskData) => {
+  const onSaveTask = (taskData) => {
     setIsSaving(true)
-    taskRepo.create(taskData)
-      .then(() => {
-        mutateTaskListResult({ ...taskListResult })
-      })
-      .finally(() => setIsSaving(false))
+
+    if (taskData.id) {
+      taskRepo.update(taskData.id, taskData)
+        .then(() => {
+          mutateTaskListResult({ ...taskListResult })
+        })
+        .finally(() => setIsSaving(false))
+    } else {
+      taskRepo.create(taskData)
+        .then(() => {
+          mutateTaskListResult({ ...taskListResult })
+        })
+        .finally(() => setIsSaving(false))
+    }
   };
 
   const onSearch = (searchText) => {
@@ -74,13 +84,16 @@ export function App() {
 
                     setSortDir(sortDirection)
                   }}
+                  onSelect={task => {
+                    setSelectedTask(task)
+                  }}
                 />
               </div>
             </div>
           </div>
           <div className="col-md-4">
             <p className="fs-4">Task Form</p>
-            <TaskForm isSaving={isSaving} onCreateTask={onCreateTask} />
+            <TaskForm isSaving={isSaving} onSaveTask={onSaveTask} task={selectedTask} />
           </div>
         </div>
       </div>

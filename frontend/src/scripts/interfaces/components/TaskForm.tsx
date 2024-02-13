@@ -1,18 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
-export const TaskForm = ({ isSaving, onCreateTask }) => {
+export const TaskForm = ({ task = null, isSaving, onSaveTask }) => {
+  const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
 
+  // === Event Handlers
   const handleSubmit = (e) => {
     e.preventDefault();
-    onCreateTask({ name, description, dueDate });
+    onSaveTask({ id, name, description, dueDate });
     // Reset form fields after submitting
     setName('');
     setDescription('');
     setDueDate('');
   };
+
+  // === Side Effects
+  useEffect(() => {
+    if (!task) {
+      return
+    }
+    setId(task.id);
+    setName(task.name);
+    setDescription(task.description);
+    setDueDate(dayjs(task.dueDate).format('YYYY-MM-DD'));
+  }, [task])
+
+
+  // === Static Vars
 
   if (isSaving) {
     return 'Saving...'
@@ -53,7 +70,7 @@ export const TaskForm = ({ isSaving, onCreateTask }) => {
           required 
         />
       </div>
-      <button type="submit" className="btn btn-primary">Create Task</button>
+      <button type="submit" className="btn btn-primary">Save Task</button>
     </form>
   );
 };

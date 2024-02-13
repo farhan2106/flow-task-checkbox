@@ -24,6 +24,7 @@ export default class TaskRepository {
   async read(taskId: number) {
     const query = `
       SELECT 
+        id,
         name, 
         description, 
         due_date AS "dueDate", 
@@ -53,6 +54,7 @@ export default class TaskRepository {
           due_date = COALESCE($3, due_date)
       WHERE id = $4
       RETURNING 
+          id,
           name, 
           description, 
           due_date AS "dueDate", 
@@ -79,6 +81,7 @@ export default class TaskRepository {
     const offset = (pageNumber - 1) * pageSize;
     let query = `
       SELECT 
+        id,
         name,
         description,
         due_date as "dueDate",
