@@ -7,8 +7,10 @@ const taskRepo = new TaskRepository(`${process.env.FE_API_SERVER}/api/v1`)
 
 export function App() {
   const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [searchString, setSearchString] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [isSaving, setIsSaving] = useState(false);
 
   const {
@@ -16,7 +18,7 @@ export function App() {
     error: _,
     isLoading: isSearching,
     mutate: mutateTaskListResult
-  } = useSWR([pageNumber, searchString, sortBy], ([pageNumber, searchString, sortBy]) => taskRepo.list(pageNumber, 10, searchString, sortBy))
+  } = useSWR([pageNumber, pageSize, searchString, sortBy, sortDir], ([pageNumber, pageSize, searchString, sortBy, sortDir]) => taskRepo.list(pageNumber, pageSize, searchString, sortBy, sortDir))
 
   // === Side Effects
 
@@ -52,7 +54,27 @@ export function App() {
             <div className="card">
               <div className="card-body">
                 <p className="fs-4">Task List</p>
-                <TaskList isSearching={isSearching} tasks={taskListResult?.tasks} onSearch={onSearch} />
+                <TaskList 
+                  isSearching={isSearching}
+                  tasks={taskListResult?.tasks}
+                  totalCount={taskListResult?.totalCount}
+                  onSearch={onSearch}
+                  onPageChange={page => {
+                    setPageNumber(page);
+                  }}
+                  onPerPageChange={pageSize => {
+                    setPageSize(pageSize);
+                  }} 
+                  onSort={(sortField, sortDirection) => {
+                    if (sortField === 'Due Date') {
+                      setSortBy('due_date')
+                    } else {
+                      setSortBy('create_date')
+                    }
+
+                    setSortDir(sortDirection)
+                  }}
+                />
               </div>
             </div>
           </div>

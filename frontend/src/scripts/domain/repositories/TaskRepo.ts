@@ -21,13 +21,15 @@ export default class TaskRepository {
     pageNumber: number = 1,
     pageSize: number = 10,
     searchString: string = '',
-    sortBy: string = 'createDate' // Default sorting by createDate
+    sortBy: string = '',
+    sortDir: 'asc' | 'desc' = 'asc'
   ) {
     const params = {
       pageNumber,
       pageSize,
-      name: searchString,
-      sortBy
+      search: searchString,
+      sortBy,
+      sortDir
     };
 
     const response = await axios.get(`${this.baseUrl}/task`, { params });

@@ -25,9 +25,10 @@ export default class TaskService {
     pageNumber: number,
     pageSize: number,
     sortBy: string | null = null,
+    sortDir: "asc" | "desc" = "asc",
     searchParams: Partial<TaskDTO> = {}
   ): Promise<{ tasks: Task[], totalCount: number }> {
-    const { tasks, totalCount } = await this.taskRepo.list(pageSize, pageNumber, sortBy, searchParams);
+    const { tasks, totalCount } = await this.taskRepo.list(pageSize, pageNumber, sortBy, sortDir, searchParams);
     return { tasks, totalCount };
   }
 }

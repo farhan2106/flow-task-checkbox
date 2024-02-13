@@ -6,7 +6,7 @@ export default class TaskController {
   async getTasks(req: Request, res: Response) {
     let dbConn;
     try {
-      const { pageNumber, pageSize, sortBy, search } = req.query;
+      const { pageNumber, pageSize, sortBy, sortDir, search } = req.query;
 
       // Validate pageNumber and pageSize
       const pageNumberInt = parseInt(pageNumber as string);
@@ -19,12 +19,15 @@ export default class TaskController {
       const validSortByValues = ['due_date', 'create_date'];
       const sortByValue = validSortByValues.includes(sortBy as string) ? sortBy : 'create_date';
 
+      const validSortDirValues = ['asc', 'desc'];
+      const sortDirValue = validSortDirValues.includes(sortDir as string) ? sortDir : 'asc';
+
       // Set search value to an empty string if not provided
       const searchValue = search || '';
 
       dbConn = await dbPool.getClient();
       const taskService = new TaskService(dbConn);
-      const tasks = await taskService.getTasks(pageNumberInt, pageSizeInt, sortByValue as string, { name: searchValue as string });
+      const tasks = await taskService.getTasks(pageNumberInt, pageSizeInt, sortByValue as string, sortDirValue as any, { name: searchValue as string });
       res.status(200).json(tasks);
     } catch (error) {
       console.error(error);

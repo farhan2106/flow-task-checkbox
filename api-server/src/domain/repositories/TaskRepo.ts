@@ -73,6 +73,7 @@ export default class TaskRepository {
     pageSize: number,
     pageNumber: number,
     sortBy: string | null = null,
+    sortDir: "asc" | "desc" = 'asc',
     searchParams: Partial<TaskDTO> = {}
   ): Promise<{ tasks: Task[], totalCount: number }> {
     const offset = (pageNumber - 1) * pageSize;
@@ -107,7 +108,7 @@ export default class TaskRepository {
     }
   
     if (sortBy) {
-      query += ` ORDER BY ${sortBy}`;
+      query += ` ORDER BY ${sortBy} ${sortDir}`;
     }
   
     query += `
