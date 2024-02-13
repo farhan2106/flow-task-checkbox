@@ -120,7 +120,7 @@ export default class TaskRepository {
     const result = await this.db.query(query, values);
   
     let totalCountQuery = `
-      SELECT COUNT(*) as totalCount FROM tasks
+      SELECT COUNT(*) as "totalCount" FROM tasks
     `;
   
     if (whereClauses.length > 0) {

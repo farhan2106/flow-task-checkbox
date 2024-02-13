@@ -16,8 +16,8 @@ export default class TaskController {
       }
 
       // Set default sorting by create date if sortBy is not provided or is invalid
-      const validSortByValues = ['dueDate', 'createDate'];
-      const sortByValue = validSortByValues.includes(sortBy as string) ? sortBy : 'createDate';
+      const validSortByValues = ['due_date', 'create_date'];
+      const sortByValue = validSortByValues.includes(sortBy as string) ? sortBy : 'create_date';
 
       // Set search value to an empty string if not provided
       const searchValue = search || '';
