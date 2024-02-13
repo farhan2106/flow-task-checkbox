@@ -12,7 +12,7 @@ export default class TaskRepository {
     const { name, description, dueDate } = taskData;
     const query = `
       INSERT INTO tasks (name, description, due_date, create_date)
-      VALUES ($1, $2, $3, NOW(), $4)
+      VALUES ($1, $2, $3, NOW())
       RETURNING name, description, due_date as "dueDate", create_date as "createDate";
     `;
     const values = [name, description, dueDate];

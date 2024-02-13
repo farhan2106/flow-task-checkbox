@@ -9,15 +9,25 @@ export function App() {
   const [pageNumber, setPageNumber] = useState(1);
   const [searchString, setSearchString] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
-  const { data: result, error, isLoading: isSearching } = useSWR([pageNumber, searchString, sortBy], ([pageNumber, searchString, sortBy]) => taskRepo.list(pageNumber, 10, searchString, sortBy))
+  const {
+    data: taskListResult,
+    error: _,
+    isLoading: isSearching,
+    mutate: mutateTaskListResult
+  } = useSWR([pageNumber, searchString, sortBy], ([pageNumber, searchString, sortBy]) => taskRepo.list(pageNumber, 10, searchString, sortBy))
 
   // === Side Effects
 
   // === Event Handlers
-  const handleTaskSubmit = (taskData) => {
-    // Send taskData to the backend API for processing
-    console.log('Task created:', taskData);
+  const onCreateTask = (taskData) => {
+    setIsSaving(true)
+    taskRepo.create(taskData)
+      .then(() => {
+        mutateTaskListResult({ ...taskListResult })
+      })
+      .finally(() => setIsSaving(false))
   };
 
   const onSearch = (searchText) => {
@@ -42,13 +52,13 @@ export function App() {
             <div className="card">
               <div className="card-body">
                 <p className="fs-4">Task List</p>
-                <TaskList isSearching={isSearching} tasks={result?.tasks} onSearch={onSearch} />
+                <TaskList isSearching={isSearching} tasks={taskListResult?.tasks} onSearch={onSearch} />
               </div>
             </div>
           </div>
           <div className="col-md-4">
             <p className="fs-4">Task Form</p>
-            <TaskForm onCreateTask={handleTaskSubmit} />
+            <TaskForm isSaving={isSaving} onCreateTask={onCreateTask} />
           </div>
         </div>
       </div>

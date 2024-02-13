@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const TaskForm = ({ onCreateTask }) => {
+export const TaskForm = ({ isSaving, onCreateTask }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -14,8 +14,12 @@ export const TaskForm = ({ onCreateTask }) => {
     setDueDate('');
   };
 
+  if (isSaving) {
+    return 'Saving...'
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} autoComplete='off'>
       <div className="mb-3">
         <label htmlFor="name" className="form-label">Name</label>
         <input 
