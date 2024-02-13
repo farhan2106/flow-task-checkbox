@@ -21,5 +21,5 @@
 
 ## How to Start
 
-`docker-compose up`
-`docker-compose down --volumes` -- when you want to start over with new database
+- `docker-compose up`
+- `docker-compose down --volumes` -- when you want to start over with new database
