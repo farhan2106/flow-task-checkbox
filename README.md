@@ -21,6 +21,7 @@
 
 ## How to Start
 
+- Need to run `npm i` in `frontend` and `api-server` (Not sure why this is happening)
 - Rename `.env.sample` to `.env` and populate the env values. 
 - `docker compose up`
 - `docker compose down --volumes` -- when you want to start over with new database
